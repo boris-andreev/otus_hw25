@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package todoapi.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "pkg/grpc/v1/todo_api";
+
+message CreateStudyRequest {
+  string topic = 1;
+}
+
+message UpdateStudyRequest {
+  int64 id = 1;
+  string topic = 2;
+}
+
+message GetStudyRequest {
+  int64 id = 1;
+}
+
+message GetStudyResponse {
+  int64 id = 1;
+  string topic = 2;
+}
+
+message ListStudyResponse {
+  repeated GetStudyResponse result = 1;
+}
+
+message DeleteStudyRequest {
+  int64 id = 1;
+}
+
+service StudyService {
+  rpc CreateStudy(CreateStudyRequest) returns (google.protobuf.Empty);
+  rpc UpdateStudy(UpdateStudyRequest) returns (google.protobuf.Empty);
+  rpc GetStudy(GetStudyRequest) returns (GetStudyResponse);
+  rpc ListStudy(google.protobuf.Empty) returns (ListStudyResponse);
+  rpc DeleteStudy(DeleteStudyRequest) returns (google.protobuf.Empty);
+}
