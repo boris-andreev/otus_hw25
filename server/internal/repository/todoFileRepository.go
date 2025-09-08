@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"hw12/internal/model"
+	"hw25/internal/model"
 	"io"
 	"os"
 	"strings"

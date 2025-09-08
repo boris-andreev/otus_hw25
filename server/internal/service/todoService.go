@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"hw12/internal/model"
-	"hw12/internal/repository"
+	"hw25/internal/model"
+	"hw25/internal/repository"
 )
 
 type TodoService struct {

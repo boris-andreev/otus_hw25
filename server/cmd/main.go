@@ -8,9 +8,8 @@ import (
 	"sync"
 	"syscall"
 
-	"hw12/internal/app"
-	"hw12/internal/repository"
-	"hw12/internal/service"
+	"hw25/internal/repository"
+	"hw25/internal/service"
 )
 
 func main() {
@@ -18,10 +17,7 @@ func main() {
 	defer stop()
 
 	var wg sync.WaitGroup
-	todoService := service.NewTodoServise(repository.NewTodoRepository(), ctx, &wg)
-	app := app.New(ctx, &wg, todoService)
-
-	app.Start()
+	service.NewTodoServise(repository.NewTodoRepository(), ctx, &wg)
 
 	wg.Wait()
 	fmt.Println("\nGracefull shutdown is ok")

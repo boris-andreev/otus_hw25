@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"hw12/internal/model"
+	"hw25/internal/model"
 )
 
 const (

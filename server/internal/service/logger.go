@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"hw12/internal/repository"
+	"hw25/internal/repository"
 )
 
 type logger struct {
