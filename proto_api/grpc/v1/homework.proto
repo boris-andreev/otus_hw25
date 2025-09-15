@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package todoapi.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "pkg/grpc/v1/todo_api";
+
+message CreateHomeworkRequest {
+  string description = 1;
+}
+
+message UpdateHomeworkRequest {
+  int64 id = 1;
+  string description = 2;
+}
+
+message GetHomeworkRequest {
+  int64 id = 1;
+}
+
+message GetHomeworkResponse {
+  int64 id = 1;
+  string description = 2;
+}
+
+message ListHomeworkResponse {
+  repeated GetHomeworkResponse result = 1;
+}
+
+message DeleteHomeworkRequest {
+  int64 id = 1;
+}
+
+service HomeworkService {
+  rpc CreateHomework(CreateHomeworkRequest) returns (google.protobuf.Empty);
+  rpc UpdateHomework(UpdateHomeworkRequest) returns (google.protobuf.Empty);
+  rpc GetHomework(GetHomeworkRequest) returns (GetHomeworkResponse);
+  rpc ListHomework(google.protobuf.Empty) returns (ListHomeworkResponse);
+  rpc DeleteHomework(DeleteHomeworkRequest) returns (google.protobuf.Empty);
+}

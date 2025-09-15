@@ -1,6 +1,6 @@
 package service
 
-import "hw25/internal/model"
+import "server/internal/model"
 
 type operationType int
 

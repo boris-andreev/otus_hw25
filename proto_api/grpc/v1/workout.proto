@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package todoapi.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "pkg/grpc/v1/todo_api";
+
+message CreateWorkoutRequest {
+  string target = 1;
+}
+
+message UpdateWorkoutRequest {
+  int64 id = 1;
+  string target = 2;
+}
+
+message GetWorkoutRequest {
+  int64 id = 1;
+}
+
+message GetWorkoutResponse {
+  int64 id = 1;
+  string target = 2;
+}
+
+message ListWorkoutResponse {
+  repeated GetWorkoutResponse result = 1;
+}
+
+message DeleteWorkoutRequest {
+  int64 id = 1;
+}
+
+service WorkoutService {
+  rpc CreateWorkout(CreateWorkoutRequest) returns (google.protobuf.Empty);
+  rpc UpdateWorkout(UpdateWorkoutRequest) returns (google.protobuf.Empty);
+  rpc GetWorkout(GetWorkoutRequest) returns (GetWorkoutResponse);
+  rpc ListWorkout(google.protobuf.Empty) returns (ListWorkoutResponse);
+  rpc DeleteWorkout(DeleteWorkoutRequest) returns (google.protobuf.Empty);
+}

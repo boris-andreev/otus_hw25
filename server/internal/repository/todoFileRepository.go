@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"hw25/internal/model"
 	"io"
 	"os"
+	"server/internal/model"
 	"strings"
 )
 
