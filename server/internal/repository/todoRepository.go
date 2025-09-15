@@ -14,7 +14,7 @@ const (
 	workoutsJson  = "./workouts.json"
 )
 
-type TodoRepository struct {
+type TodoRepositoryImpl struct {
 	homeworks []*model.HomeworkItem
 	studies   []*model.StudyItem
 	workouts  []*model.WorkoutItem
@@ -26,7 +26,7 @@ type TodoRepository struct {
 	items chan model.Identifier
 }
 
-func (t *TodoRepository) CreateItem(item model.Identifier) {
+func (t *TodoRepositoryImpl) CreateItem(item model.Identifier) {
 	switch item.(type) {
 	case *model.HomeworkItem:
 		appendItem[*model.HomeworkItem](&t.homeworks, item.(*model.HomeworkItem), t.homeworksMutex, homeworksJson)
@@ -55,7 +55,7 @@ func appendItem[T model.ItemWithId](
 	}
 }
 
-func (t *TodoRepository) UpdateItem(item model.Identifier) {
+func (t *TodoRepositoryImpl) UpdateItem(item model.Identifier) {
 	switch item.(type) {
 	case *model.HomeworkItem:
 		saveItem[*model.HomeworkItem](t.homeworks, item.(*model.HomeworkItem), t.homeworksMutex, homeworksJson)
@@ -87,7 +87,7 @@ func saveItem[T model.ItemWithId](
 	}
 }
 
-func (t *TodoRepository) GetLasttHomeworkItemId() int {
+func (t *TodoRepositoryImpl) GetLasttHomeworkItemId() int {
 	t.homeworksMutex.RLock()
 	defer t.homeworksMutex.RUnlock()
 
@@ -99,7 +99,7 @@ func (t *TodoRepository) GetLasttHomeworkItemId() int {
 	return t.homeworks[length-1].Id
 }
 
-func (t *TodoRepository) GetLastStudyItemId() int {
+func (t *TodoRepositoryImpl) GetLastStudyItemId() int {
 	t.studiesMutex.RLock()
 	defer t.studiesMutex.RUnlock()
 
@@ -111,7 +111,7 @@ func (t *TodoRepository) GetLastStudyItemId() int {
 	return t.studies[length-1].Id
 }
 
-func (t *TodoRepository) GetLastWorkoutItemId() int {
+func (t *TodoRepositoryImpl) GetLastWorkoutItemId() int {
 	t.workoutsMutex.RLock()
 	defer t.workoutsMutex.RUnlock()
 
@@ -123,7 +123,7 @@ func (t *TodoRepository) GetLastWorkoutItemId() int {
 	return t.workouts[length-1].Id
 }
 
-func (t *TodoRepository) DeleteHomeworkItem(id int) error {
+func (t *TodoRepositoryImpl) DeleteHomeworkItem(id int) error {
 	t.homeworksMutex.Lock()
 	defer t.homeworksMutex.Unlock()
 
@@ -134,7 +134,7 @@ func (t *TodoRepository) DeleteHomeworkItem(id int) error {
 	return nil
 }
 
-func (t *TodoRepository) DeleteStudyItem(id int) error {
+func (t *TodoRepositoryImpl) DeleteStudyItem(id int) error {
 	t.studiesMutex.Lock()
 	defer t.studiesMutex.Unlock()
 
@@ -145,7 +145,7 @@ func (t *TodoRepository) DeleteStudyItem(id int) error {
 	return nil
 }
 
-func (t *TodoRepository) DeleteWorkoutItem(id int) error {
+func (t *TodoRepositoryImpl) DeleteWorkoutItem(id int) error {
 	t.workoutsMutex.Lock()
 	defer t.workoutsMutex.Unlock()
 
@@ -156,7 +156,7 @@ func (t *TodoRepository) DeleteWorkoutItem(id int) error {
 	return nil
 }
 
-func (t *TodoRepository) GetHomeworkItem(id int) (*model.HomeworkItem, error) {
+func (t *TodoRepositoryImpl) GetHomeworkItem(id int) (*model.HomeworkItem, error) {
 	t.homeworksMutex.RLock()
 	defer t.homeworksMutex.RUnlock()
 
@@ -169,7 +169,7 @@ func (t *TodoRepository) GetHomeworkItem(id int) (*model.HomeworkItem, error) {
 	return t.homeworks[id], nil
 }
 
-func (t *TodoRepository) GetStudyItem(id int) (*model.StudyItem, error) {
+func (t *TodoRepositoryImpl) GetStudyItem(id int) (*model.StudyItem, error) {
 	t.studiesMutex.Lock()
 	defer t.studiesMutex.Unlock()
 
@@ -182,7 +182,7 @@ func (t *TodoRepository) GetStudyItem(id int) (*model.StudyItem, error) {
 	return t.studies[id], nil
 }
 
-func (t *TodoRepository) GetWorkoutItem(id int) (*model.WorkoutItem, error) {
+func (t *TodoRepositoryImpl) GetWorkoutItem(id int) (*model.WorkoutItem, error) {
 	t.workoutsMutex.Lock()
 	defer t.workoutsMutex.Unlock()
 
@@ -195,21 +195,21 @@ func (t *TodoRepository) GetWorkoutItem(id int) (*model.WorkoutItem, error) {
 	return t.workouts[id], nil
 }
 
-func (t *TodoRepository) GetHomeworkItems() ([]*model.HomeworkItem, error) {
+func (t *TodoRepositoryImpl) GetHomeworkItems() ([]*model.HomeworkItem, error) {
 	t.homeworksMutex.RLock()
 	defer t.homeworksMutex.RUnlock()
 
 	return t.homeworks, nil
 }
 
-func (t *TodoRepository) GetStudyItems() ([]*model.StudyItem, error) {
+func (t *TodoRepositoryImpl) GetStudyItems() ([]*model.StudyItem, error) {
 	t.studiesMutex.Lock()
 	defer t.studiesMutex.Unlock()
 
 	return t.studies, nil
 }
 
-func (t *TodoRepository) GetWorkoutItems() ([]*model.WorkoutItem, error) {
+func (t *TodoRepositoryImpl) GetWorkoutItems() ([]*model.WorkoutItem, error) {
 	t.workoutsMutex.Lock()
 	defer t.workoutsMutex.Unlock()
 
@@ -235,15 +235,15 @@ func searchItemIndexById[T model.ItemWithId](slice []T, id int) (bool, int) {
 	return res, i
 }
 
-func (t *TodoRepository) GetNewHomewors(lastHomeworkItemId int) (int, []*model.HomeworkItem) {
+func (t *TodoRepositoryImpl) GetNewHomewors(lastHomeworkItemId int) (int, []*model.HomeworkItem) {
 	return getNewItems(lastHomeworkItemId, t.homeworksMutex, t.homeworks)
 }
 
-func (t *TodoRepository) GetNewStudies(lastStudyItemId int) (int, []*model.StudyItem) {
+func (t *TodoRepositoryImpl) GetNewStudies(lastStudyItemId int) (int, []*model.StudyItem) {
 	return getNewItems(lastStudyItemId, t.studiesMutex, t.studies)
 }
 
-func (t *TodoRepository) GetNewWorkouts(lastWorkoutItemId int) (int, []*model.WorkoutItem) {
+func (t *TodoRepositoryImpl) GetNewWorkouts(lastWorkoutItemId int) (int, []*model.WorkoutItem) {
 	return getNewItems(lastWorkoutItemId, t.workoutsMutex, t.workouts)
 }
 
@@ -296,8 +296,8 @@ func getNextItemIndexById[T model.ItemWithId](itemId int, slice []T) (doesNextIt
 	return true, itemIndex, lastId, length
 }
 
-func NewTodoRepository() *TodoRepository {
-	result := &TodoRepository{
+func NewTodoRepository() *TodoRepositoryImpl {
+	result := &TodoRepositoryImpl{
 		homeworksMutex: &sync.RWMutex{},
 		studiesMutex:   &sync.RWMutex{},
 		workoutsMutex:  &sync.RWMutex{},

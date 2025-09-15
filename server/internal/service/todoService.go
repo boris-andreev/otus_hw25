@@ -5,12 +5,31 @@ import (
 	"sync"
 
 	"server/internal/model"
-	"server/internal/repository"
 )
+
+type todoRepository interface {
+	CreateItem(item model.Identifier)
+	UpdateItem(item model.Identifier)
+	GetLasttHomeworkItemId() int
+	GetLastStudyItemId() int
+	GetLastWorkoutItemId() int
+	DeleteHomeworkItem(id int) error
+	DeleteStudyItem(id int) error
+	DeleteWorkoutItem(id int) error
+	GetHomeworkItem(id int) (*model.HomeworkItem, error)
+	GetStudyItem(id int) (*model.StudyItem, error)
+	GetWorkoutItem(id int) (*model.WorkoutItem, error)
+	GetHomeworkItems() ([]*model.HomeworkItem, error)
+	GetStudyItems() ([]*model.StudyItem, error)
+	GetWorkoutItems() ([]*model.WorkoutItem, error)
+	GetNewHomewors(lastHomeworkItemId int) (int, []*model.HomeworkItem)
+	GetNewStudies(lastStudyItemId int) (int, []*model.StudyItem)
+	GetNewWorkouts(lastWorkoutItemId int) (int, []*model.WorkoutItem)
+}
 
 type TodoService struct {
 	items      chan *operationItem
-	repository *repository.TodoRepository
+	repository todoRepository
 	ctx        context.Context
 	wg         *sync.WaitGroup
 	logger     *logger
@@ -99,7 +118,7 @@ func (t *TodoService) listenForFinish() {
 	}()
 }
 
-func NewTodoServise(repo *repository.TodoRepository, ctx context.Context, wg *sync.WaitGroup) *TodoService {
+func NewTodoService(repo todoRepository, ctx context.Context, wg *sync.WaitGroup) *TodoService {
 	res := &TodoService{
 		items:      make(chan *operationItem),
 		repository: repo,

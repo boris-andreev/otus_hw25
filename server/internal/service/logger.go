@@ -7,12 +7,10 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"server/internal/repository"
 )
 
 type logger struct {
-	repository *repository.TodoRepository
+	repository todoRepository
 	ctx        context.Context
 	wg         *sync.WaitGroup
 }
@@ -67,7 +65,7 @@ func logAddedItems[T any](lastItemIdLogged int, message string, getItems func(in
 	return lastItemId
 }
 
-func NewLogger(repo *repository.TodoRepository, ctx context.Context, wg *sync.WaitGroup) *logger {
+func NewLogger(repo todoRepository, ctx context.Context, wg *sync.WaitGroup) *logger {
 	return &logger{
 		repository: repo,
 		ctx:        ctx,
