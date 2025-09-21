@@ -68,7 +68,7 @@ func (x *CreateHomeworkRequest) GetDescription() string {
 
 type UpdateHomeworkRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -104,11 +104,11 @@ func (*UpdateHomeworkRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_homework_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UpdateHomeworkRequest) GetId() int64 {
+func (x *UpdateHomeworkRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 func (x *UpdateHomeworkRequest) GetDescription() string {
@@ -120,7 +120,7 @@ func (x *UpdateHomeworkRequest) GetDescription() string {
 
 type GetHomeworkRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -155,16 +155,16 @@ func (*GetHomeworkRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_homework_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetHomeworkRequest) GetId() int64 {
+func (x *GetHomeworkRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 type GetHomeworkResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -200,11 +200,11 @@ func (*GetHomeworkResponse) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_homework_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetHomeworkResponse) GetId() int64 {
+func (x *GetHomeworkResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 func (x *GetHomeworkResponse) GetDescription() string {
@@ -260,7 +260,7 @@ func (x *ListHomeworkResponse) GetResult() []*GetHomeworkResponse {
 
 type DeleteHomeworkRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -295,11 +295,11 @@ func (*DeleteHomeworkRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_homework_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *DeleteHomeworkRequest) GetId() int64 {
+func (x *DeleteHomeworkRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 var File_grpc_v1_homework_proto protoreflect.FileDescriptor
@@ -311,17 +311,17 @@ const file_grpc_v1_homework_proto_rawDesc = "" +
 	"\x15CreateHomeworkRequest\x12 \n" +
 	"\vdescription\x18\x01 \x01(\tR\vdescription\"I\n" +
 	"\x15UpdateHomeworkRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12 \n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\"$\n" +
 	"\x12GetHomeworkRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"G\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"G\n" +
 	"\x13GetHomeworkResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12 \n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\"O\n" +
 	"\x14ListHomeworkResponse\x127\n" +
 	"\x06result\x18\x01 \x03(\v2\x1f.todoapi.v1.GetHomeworkResponseR\x06result\"'\n" +
 	"\x15DeleteHomeworkRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id2\x92\x03\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\x92\x03\n" +
 	"\x0fHomeworkService\x12K\n" +
 	"\x0eCreateHomework\x12!.todoapi.v1.CreateHomeworkRequest\x1a\x16.google.protobuf.Empty\x12K\n" +
 	"\x0eUpdateHomework\x12!.todoapi.v1.UpdateHomeworkRequest\x1a\x16.google.protobuf.Empty\x12N\n" +

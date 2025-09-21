@@ -12,6 +12,7 @@ package mock
 import (
 	reflect "reflect"
 	model "server/internal/model"
+	"time"
 
 	gomock "github.com/golang/mock/gomock"
 )
@@ -53,7 +54,7 @@ func (mr *MocktodoRepositoryMockRecorder) CreateItem(item any) *gomock.Call {
 }
 
 // DeleteHomeworkItem mocks base method.
-func (m *MocktodoRepository) DeleteHomeworkItem(id int) error {
+func (m *MocktodoRepository) DeleteHomeworkItem(id string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteHomeworkItem", id)
 	ret0, _ := ret[0].(error)
@@ -67,7 +68,7 @@ func (mr *MocktodoRepositoryMockRecorder) DeleteHomeworkItem(id any) *gomock.Cal
 }
 
 // DeleteStudyItem mocks base method.
-func (m *MocktodoRepository) DeleteStudyItem(id int) error {
+func (m *MocktodoRepository) DeleteStudyItem(id string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteStudyItem", id)
 	ret0, _ := ret[0].(error)
@@ -81,7 +82,7 @@ func (mr *MocktodoRepositoryMockRecorder) DeleteStudyItem(id any) *gomock.Call {
 }
 
 // DeleteWorkoutItem mocks base method.
-func (m *MocktodoRepository) DeleteWorkoutItem(id int) error {
+func (m *MocktodoRepository) DeleteWorkoutItem(id string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteWorkoutItem", id)
 	ret0, _ := ret[0].(error)
@@ -95,7 +96,7 @@ func (mr *MocktodoRepositoryMockRecorder) DeleteWorkoutItem(id any) *gomock.Call
 }
 
 // GetHomeworkItem mocks base method.
-func (m *MocktodoRepository) GetHomeworkItem(id int) (*model.HomeworkItem, error) {
+func (m *MocktodoRepository) GetHomeworkItem(id string) (*model.HomeworkItem, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetHomeworkItem", id)
 	ret0, _ := ret[0].(*model.HomeworkItem)
@@ -124,95 +125,53 @@ func (mr *MocktodoRepositoryMockRecorder) GetHomeworkItems() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHomeworkItems", reflect.TypeOf((*MocktodoRepository)(nil).GetHomeworkItems))
 }
 
-// GetLastStudyItemId mocks base method.
-func (m *MocktodoRepository) GetLastStudyItemId() int {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetLastStudyItemId")
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// GetLastStudyItemId indicates an expected call of GetLastStudyItemId.
-func (mr *MocktodoRepositoryMockRecorder) GetLastStudyItemId() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLastStudyItemId", reflect.TypeOf((*MocktodoRepository)(nil).GetLastStudyItemId))
-}
-
-// GetLastWorkoutItemId mocks base method.
-func (m *MocktodoRepository) GetLastWorkoutItemId() int {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetLastWorkoutItemId")
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// GetLastWorkoutItemId indicates an expected call of GetLastWorkoutItemId.
-func (mr *MocktodoRepositoryMockRecorder) GetLastWorkoutItemId() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLastWorkoutItemId", reflect.TypeOf((*MocktodoRepository)(nil).GetLastWorkoutItemId))
-}
-
-// GetLasttHomeworkItemId mocks base method.
-func (m *MocktodoRepository) GetLasttHomeworkItemId() int {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetLasttHomeworkItemId")
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// GetLasttHomeworkItemId indicates an expected call of GetLasttHomeworkItemId.
-func (mr *MocktodoRepositoryMockRecorder) GetLasttHomeworkItemId() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLasttHomeworkItemId", reflect.TypeOf((*MocktodoRepository)(nil).GetLasttHomeworkItemId))
-}
-
 // GetNewHomewors mocks base method.
-func (m *MocktodoRepository) GetNewHomewors(lastHomeworkItemId int) (int, []*model.HomeworkItem) {
+func (m *MocktodoRepository) GetNewHomewors(timestamp time.Time) ([]*model.HomeworkItem, time.Time) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetNewHomewors", lastHomeworkItemId)
-	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].([]*model.HomeworkItem)
+	ret := m.ctrl.Call(m, "GetNewHomewors", timestamp)
+	ret1, _ := ret[1].(time.Time)
+	ret0, _ := ret[0].([]*model.HomeworkItem)
 	return ret0, ret1
 }
 
 // GetNewHomewors indicates an expected call of GetNewHomewors.
-func (mr *MocktodoRepositoryMockRecorder) GetNewHomewors(lastHomeworkItemId any) *gomock.Call {
+func (mr *MocktodoRepositoryMockRecorder) GetNewHomewors(timestamp any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNewHomewors", reflect.TypeOf((*MocktodoRepository)(nil).GetNewHomewors), lastHomeworkItemId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNewHomewors", reflect.TypeOf((*MocktodoRepository)(nil).GetNewHomewors), timestamp)
 }
 
 // GetNewStudies mocks base method.
-func (m *MocktodoRepository) GetNewStudies(lastStudyItemId int) (int, []*model.StudyItem) {
+func (m *MocktodoRepository) GetNewStudies(timestamp time.Time) ([]*model.StudyItem, time.Time) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetNewStudies", lastStudyItemId)
-	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].([]*model.StudyItem)
+	ret := m.ctrl.Call(m, "GetNewStudies", timestamp)
+	ret1, _ := ret[1].(time.Time)
+	ret0, _ := ret[0].([]*model.StudyItem)
 	return ret0, ret1
 }
 
 // GetNewStudies indicates an expected call of GetNewStudies.
-func (mr *MocktodoRepositoryMockRecorder) GetNewStudies(lastStudyItemId any) *gomock.Call {
+func (mr *MocktodoRepositoryMockRecorder) GetNewStudies(timestamp any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNewStudies", reflect.TypeOf((*MocktodoRepository)(nil).GetNewStudies), lastStudyItemId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNewStudies", reflect.TypeOf((*MocktodoRepository)(nil).GetNewStudies), timestamp)
 }
 
 // GetNewWorkouts mocks base method.
-func (m *MocktodoRepository) GetNewWorkouts(lastWorkoutItemId int) (int, []*model.WorkoutItem) {
+func (m *MocktodoRepository) GetNewWorkouts(timestamp time.Time) ([]*model.WorkoutItem, time.Time) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetNewWorkouts", lastWorkoutItemId)
-	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].([]*model.WorkoutItem)
+	ret := m.ctrl.Call(m, "GetNewWorkouts", timestamp)
+	ret1, _ := ret[1].(time.Time)
+	ret0, _ := ret[0].([]*model.WorkoutItem)
 	return ret0, ret1
 }
 
 // GetNewWorkouts indicates an expected call of GetNewWorkouts.
-func (mr *MocktodoRepositoryMockRecorder) GetNewWorkouts(lastWorkoutItemId any) *gomock.Call {
+func (mr *MocktodoRepositoryMockRecorder) GetNewWorkouts(timestamp any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNewWorkouts", reflect.TypeOf((*MocktodoRepository)(nil).GetNewWorkouts), lastWorkoutItemId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNewWorkouts", reflect.TypeOf((*MocktodoRepository)(nil).GetNewWorkouts), timestamp)
 }
 
 // GetStudyItem mocks base method.
-func (m *MocktodoRepository) GetStudyItem(id int) (*model.StudyItem, error) {
+func (m *MocktodoRepository) GetStudyItem(id string) (*model.StudyItem, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetStudyItem", id)
 	ret0, _ := ret[0].(*model.StudyItem)
@@ -242,7 +201,7 @@ func (mr *MocktodoRepositoryMockRecorder) GetStudyItems() *gomock.Call {
 }
 
 // GetWorkoutItem mocks base method.
-func (m *MocktodoRepository) GetWorkoutItem(id int) (*model.WorkoutItem, error) {
+func (m *MocktodoRepository) GetWorkoutItem(id string) (*model.WorkoutItem, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetWorkoutItem", id)
 	ret0, _ := ret[0].(*model.WorkoutItem)

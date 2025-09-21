@@ -18,7 +18,7 @@ func main() {
 	defer stop()
 
 	var wg sync.WaitGroup
-	todoService := service.NewTodoService(repository.NewTodoRepository(), ctx, &wg)
+	todoService := service.NewTodoService(repository.NewTodoRepository(ctx, &wg), ctx, &wg)
 
 	app := app.New(ctx, &wg, todoService)
 

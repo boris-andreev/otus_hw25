@@ -68,7 +68,7 @@ func (x *CreateStudyRequest) GetTopic() string {
 
 type UpdateStudyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Topic         string                 `protobuf:"bytes,2,opt,name=topic,proto3" json:"topic,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -104,11 +104,11 @@ func (*UpdateStudyRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_study_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UpdateStudyRequest) GetId() int64 {
+func (x *UpdateStudyRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 func (x *UpdateStudyRequest) GetTopic() string {
@@ -120,7 +120,7 @@ func (x *UpdateStudyRequest) GetTopic() string {
 
 type GetStudyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -155,16 +155,16 @@ func (*GetStudyRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_study_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetStudyRequest) GetId() int64 {
+func (x *GetStudyRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 type GetStudyResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Topic         string                 `protobuf:"bytes,2,opt,name=topic,proto3" json:"topic,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -200,11 +200,11 @@ func (*GetStudyResponse) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_study_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetStudyResponse) GetId() int64 {
+func (x *GetStudyResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 func (x *GetStudyResponse) GetTopic() string {
@@ -260,7 +260,7 @@ func (x *ListStudyResponse) GetResult() []*GetStudyResponse {
 
 type DeleteStudyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -295,11 +295,11 @@ func (*DeleteStudyRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_study_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *DeleteStudyRequest) GetId() int64 {
+func (x *DeleteStudyRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 var File_grpc_v1_study_proto protoreflect.FileDescriptor
@@ -311,17 +311,17 @@ const file_grpc_v1_study_proto_rawDesc = "" +
 	"\x12CreateStudyRequest\x12\x14\n" +
 	"\x05topic\x18\x01 \x01(\tR\x05topic\":\n" +
 	"\x12UpdateStudyRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05topic\x18\x02 \x01(\tR\x05topic\"!\n" +
 	"\x0fGetStudyRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"8\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"8\n" +
 	"\x10GetStudyResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05topic\x18\x02 \x01(\tR\x05topic\"I\n" +
 	"\x11ListStudyResponse\x124\n" +
 	"\x06result\x18\x01 \x03(\v2\x1c.todoapi.v1.GetStudyResponseR\x06result\"$\n" +
 	"\x12DeleteStudyRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id2\xee\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xee\x02\n" +
 	"\fStudyService\x12E\n" +
 	"\vCreateStudy\x12\x1e.todoapi.v1.CreateStudyRequest\x1a\x16.google.protobuf.Empty\x12E\n" +
 	"\vUpdateStudy\x12\x1e.todoapi.v1.UpdateStudyRequest\x1a\x16.google.protobuf.Empty\x12E\n" +

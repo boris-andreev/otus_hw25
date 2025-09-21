@@ -68,7 +68,7 @@ func (x *CreateWorkoutRequest) GetTarget() string {
 
 type UpdateWorkoutRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Target        string                 `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -104,11 +104,11 @@ func (*UpdateWorkoutRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_workout_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UpdateWorkoutRequest) GetId() int64 {
+func (x *UpdateWorkoutRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 func (x *UpdateWorkoutRequest) GetTarget() string {
@@ -120,7 +120,7 @@ func (x *UpdateWorkoutRequest) GetTarget() string {
 
 type GetWorkoutRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -155,16 +155,16 @@ func (*GetWorkoutRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_workout_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetWorkoutRequest) GetId() int64 {
+func (x *GetWorkoutRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 type GetWorkoutResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Target        string                 `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -200,11 +200,11 @@ func (*GetWorkoutResponse) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_workout_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetWorkoutResponse) GetId() int64 {
+func (x *GetWorkoutResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 func (x *GetWorkoutResponse) GetTarget() string {
@@ -260,7 +260,7 @@ func (x *ListWorkoutResponse) GetResult() []*GetWorkoutResponse {
 
 type DeleteWorkoutRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -295,11 +295,11 @@ func (*DeleteWorkoutRequest) Descriptor() ([]byte, []int) {
 	return file_grpc_v1_workout_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *DeleteWorkoutRequest) GetId() int64 {
+func (x *DeleteWorkoutRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
-	return 0
+	return ""
 }
 
 var File_grpc_v1_workout_proto protoreflect.FileDescriptor
@@ -311,17 +311,17 @@ const file_grpc_v1_workout_proto_rawDesc = "" +
 	"\x14CreateWorkoutRequest\x12\x16\n" +
 	"\x06target\x18\x01 \x01(\tR\x06target\">\n" +
 	"\x14UpdateWorkoutRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x16\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06target\x18\x02 \x01(\tR\x06target\"#\n" +
 	"\x11GetWorkoutRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"<\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"<\n" +
 	"\x12GetWorkoutResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x16\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06target\x18\x02 \x01(\tR\x06target\"M\n" +
 	"\x13ListWorkoutResponse\x126\n" +
 	"\x06result\x18\x01 \x03(\v2\x1e.todoapi.v1.GetWorkoutResponseR\x06result\"&\n" +
 	"\x14DeleteWorkoutRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id2\x86\x03\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\x86\x03\n" +
 	"\x0eWorkoutService\x12I\n" +
 	"\rCreateWorkout\x12 .todoapi.v1.CreateWorkoutRequest\x1a\x16.google.protobuf.Empty\x12I\n" +
 	"\rUpdateWorkout\x12 .todoapi.v1.UpdateWorkoutRequest\x1a\x16.google.protobuf.Empty\x12K\n" +

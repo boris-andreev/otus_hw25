@@ -1,329 +1,244 @@
 package repository
 
 import (
+	"context"
 	"log"
-	"sort"
-	"sync"
-
 	"server/internal/model"
+	"sync"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
-	homeworksJson = "./homeworks.json"
-	studiesJson   = "./studies.json"
-	workoutsJson  = "./workouts.json"
+	homeworks = "homeworks"
+	workouts  = "workouts"
+	studies   = "studies"
+	db        = "todo"
 )
 
 type TodoRepositoryImpl struct {
-	homeworks []*model.HomeworkItem
-	studies   []*model.StudyItem
-	workouts  []*model.WorkoutItem
-
-	homeworksMutex *sync.RWMutex
-	studiesMutex   *sync.RWMutex
-	workoutsMutex  *sync.RWMutex
-
-	items chan model.Identifier
+	items  chan model.Identifier
+	client *mongo.Client
+	ctx    context.Context
+	wg     *sync.WaitGroup
 }
 
 func (t *TodoRepositoryImpl) CreateItem(item model.Identifier) {
 	switch item.(type) {
 	case *model.HomeworkItem:
-		appendItem[*model.HomeworkItem](&t.homeworks, item.(*model.HomeworkItem), t.homeworksMutex, homeworksJson)
+		appendItem(t.client, item, homeworks)
 	case *model.StudyItem:
-		appendItem[*model.StudyItem](&t.studies, item.(*model.StudyItem), t.studiesMutex, studiesJson)
+		appendItem(t.client, item, studies)
 	case *model.WorkoutItem:
-		appendItem[*model.WorkoutItem](&t.workouts, item.(*model.WorkoutItem), t.workoutsMutex, workoutsJson)
+		appendItem(t.client, item, workouts)
 	}
 }
 
-func appendItem[T model.ItemWithId](
-	slice *[]T,
-	item T,
-	mutex *sync.RWMutex,
-	fileName string) {
+func appendItem(client *mongo.Client, item model.Identifier, entityName string) {
+	collection := client.Database(db).Collection(entityName)
+	item.SetId(primitive.NewObjectID())
 
-	mutex.Lock()
-	defer mutex.Unlock()
-
-	item.SetId(len(*slice) + 1)
-
-	*slice = append(*slice, item)
-	err := appendToFile(fileName, item)
-	if err != nil {
-		log.Panic(err)
+	if _, err := collection.InsertOne(context.TODO(), item); err != nil {
+		log.Fatal(err)
 	}
 }
 
 func (t *TodoRepositoryImpl) UpdateItem(item model.Identifier) {
 	switch item.(type) {
 	case *model.HomeworkItem:
-		saveItem[*model.HomeworkItem](t.homeworks, item.(*model.HomeworkItem), t.homeworksMutex, homeworksJson)
+		saveItem(t.client, item, homeworks)
 	case *model.StudyItem:
-		saveItem[*model.StudyItem](t.studies, item.(*model.StudyItem), t.studiesMutex, studiesJson)
+		saveItem(t.client, item, studies)
 	case *model.WorkoutItem:
-		saveItem[*model.WorkoutItem](t.workouts, item.(*model.WorkoutItem), t.workoutsMutex, workoutsJson)
+		saveItem(t.client, item, workouts)
 	}
 }
 
-func saveItem[T model.ItemWithId](
-	slice []T,
-	item T,
-	mutex *sync.RWMutex,
-	fileName string) {
+func saveItem(client *mongo.Client, item model.Identifier, entityName string) {
+	collection := client.Database(db).Collection(entityName)
 
-	mutex.Lock()
-	defer mutex.Unlock()
-
-	found, id := searchItemIndexById(slice, item.GetId())
-	if !found {
-		log.Printf("Could not find item with id: %d", item.GetId())
-	}
-
-	slice[id] = item
-
-	if err := overwriteFile(fileName, slice); err != nil {
-		log.Panic(err)
+	_, err := collection.UpdateOne(context.TODO(), bson.M{"_id": item.GetId()}, bson.M{"$set": item})
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
-func (t *TodoRepositoryImpl) GetLasttHomeworkItemId() int {
-	t.homeworksMutex.RLock()
-	defer t.homeworksMutex.RUnlock()
-
-	length := len(t.homeworks)
-	if length == 0 {
-		return 0
-	}
-
-	return t.homeworks[length-1].Id
+func (t *TodoRepositoryImpl) DeleteHomeworkItem(id string) error {
+	return deleteItemById(t.client, id, homeworks)
 }
 
-func (t *TodoRepositoryImpl) GetLastStudyItemId() int {
-	t.studiesMutex.RLock()
-	defer t.studiesMutex.RUnlock()
-
-	length := len(t.studies)
-	if length == 0 {
-		return 0
-	}
-
-	return t.studies[length-1].Id
+func (t *TodoRepositoryImpl) DeleteStudyItem(id string) error {
+	return deleteItemById(t.client, id, studies)
 }
 
-func (t *TodoRepositoryImpl) GetLastWorkoutItemId() int {
-	t.workoutsMutex.RLock()
-	defer t.workoutsMutex.RUnlock()
-
-	length := len(t.workouts)
-	if length == 0 {
-		return 0
-	}
-
-	return t.workouts[length-1].Id
+func (t *TodoRepositoryImpl) DeleteWorkoutItem(id string) error {
+	return deleteItemById(t.client, id, workouts)
 }
 
-func (t *TodoRepositoryImpl) DeleteHomeworkItem(id int) error {
-	t.homeworksMutex.Lock()
-	defer t.homeworksMutex.Unlock()
+func deleteItemById(client *mongo.Client, entityName string, id string) error {
+	collection := client.Database(db).Collection(entityName)
 
-	if deleteItemById(&t.homeworks, id) {
-		return overwriteFile(homeworksJson, t.homeworks)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	_, err = collection.DeleteOne(context.TODO(), bson.M{"_id": objectId})
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func (t *TodoRepositoryImpl) DeleteStudyItem(id int) error {
-	t.studiesMutex.Lock()
-	defer t.studiesMutex.Unlock()
-
-	if deleteItemById(&t.studies, id) {
-		return overwriteFile(studiesJson, t.studies)
-	}
-
-	return nil
+func (t *TodoRepositoryImpl) GetHomeworkItem(id string) (*model.HomeworkItem, error) {
+	return getItem[*model.HomeworkItem](t.client, homeworks, id)
 }
 
-func (t *TodoRepositoryImpl) DeleteWorkoutItem(id int) error {
-	t.workoutsMutex.Lock()
-	defer t.workoutsMutex.Unlock()
-
-	if deleteItemById(&t.workouts, id) {
-		return overwriteFile(workoutsJson, t.workouts)
-	}
-
-	return nil
+func (t *TodoRepositoryImpl) GetStudyItem(id string) (*model.StudyItem, error) {
+	return getItem[*model.StudyItem](t.client, studies, id)
 }
 
-func (t *TodoRepositoryImpl) GetHomeworkItem(id int) (*model.HomeworkItem, error) {
-	t.homeworksMutex.RLock()
-	defer t.homeworksMutex.RUnlock()
-
-	found, id := searchItemIndexById(t.homeworks, id)
-
-	if !found {
-		return nil, nil
-	}
-
-	return t.homeworks[id], nil
+func (t *TodoRepositoryImpl) GetWorkoutItem(id string) (*model.WorkoutItem, error) {
+	return getItem[*model.WorkoutItem](t.client, workouts, id)
 }
 
-func (t *TodoRepositoryImpl) GetStudyItem(id int) (*model.StudyItem, error) {
-	t.studiesMutex.Lock()
-	defer t.studiesMutex.Unlock()
+func getItem[T model.ItemWithId](client *mongo.Client, entityName string, id string) (T, error) {
+	collection := client.Database(db).Collection(entityName)
 
-	found, id := searchItemIndexById(t.studies, id)
-
-	if !found {
-		return nil, nil
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
 	}
 
-	return t.studies[id], nil
-}
+	var t T
 
-func (t *TodoRepositoryImpl) GetWorkoutItem(id int) (*model.WorkoutItem, error) {
-	t.workoutsMutex.Lock()
-	defer t.workoutsMutex.Unlock()
-
-	found, id := searchItemIndexById(t.workouts, id)
-
-	if !found {
-		return nil, nil
+	err = collection.FindOne(context.TODO(), bson.M{"_id": objectId}).Decode(&t)
+	if err != nil {
+		return nil, err
 	}
 
-	return t.workouts[id], nil
+	return t, nil
 }
 
 func (t *TodoRepositoryImpl) GetHomeworkItems() ([]*model.HomeworkItem, error) {
-	t.homeworksMutex.RLock()
-	defer t.homeworksMutex.RUnlock()
-
-	return t.homeworks, nil
+	return getItems[*model.HomeworkItem](t.client, homeworks)
 }
 
 func (t *TodoRepositoryImpl) GetStudyItems() ([]*model.StudyItem, error) {
-	t.studiesMutex.Lock()
-	defer t.studiesMutex.Unlock()
-
-	return t.studies, nil
+	return getItems[*model.StudyItem](t.client, studies)
 }
 
 func (t *TodoRepositoryImpl) GetWorkoutItems() ([]*model.WorkoutItem, error) {
-	t.workoutsMutex.Lock()
-	defer t.workoutsMutex.Unlock()
-
-	return t.workouts, nil
+	return getItems[*model.WorkoutItem](t.client, workouts)
 }
 
-func deleteItemById[T model.ItemWithId](slice *[]T, id int) bool {
-	found, i := searchItemIndexById(*slice, id)
-	if found {
-		*slice = append((*slice)[:i], (*slice)[i+1:]...)
+func getItems[T model.ItemWithId](client *mongo.Client, entityName string) ([]T, error) {
+	collection := client.Database(db).Collection(entityName)
+
+	cursor, err := collection.Find(context.TODO(), primitive.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var res []T
+	if err = cursor.All(context.TODO(), &res); err != nil {
+		log.Fatal(err)
 	}
 
-	return found
+	return res, nil
 }
 
-func searchItemIndexById[T model.ItemWithId](slice []T, id int) (bool, int) {
-	i := sort.Search(len(slice), func(i int) bool {
-		return slice[i].GetId() >= id
-	})
-
-	res := i < len(slice) && slice[i].GetId() == id
-
-	return res, i
+func (t *TodoRepositoryImpl) GetNewHomewors(timestamp time.Time) ([]*model.HomeworkItem, time.Time) {
+	return getNewItems[*model.HomeworkItem](t.client, homeworks, timestamp)
 }
 
-func (t *TodoRepositoryImpl) GetNewHomewors(lastHomeworkItemId int) (int, []*model.HomeworkItem) {
-	return getNewItems(lastHomeworkItemId, t.homeworksMutex, t.homeworks)
+func (t *TodoRepositoryImpl) GetNewStudies(timestamp time.Time) ([]*model.StudyItem, time.Time) {
+	return getNewItems[*model.StudyItem](t.client, studies, timestamp)
 }
 
-func (t *TodoRepositoryImpl) GetNewStudies(lastStudyItemId int) (int, []*model.StudyItem) {
-	return getNewItems(lastStudyItemId, t.studiesMutex, t.studies)
+func (t *TodoRepositoryImpl) GetNewWorkouts(timestamp time.Time) ([]*model.WorkoutItem, time.Time) {
+	return getNewItems[*model.WorkoutItem](t.client, workouts, timestamp)
 }
 
-func (t *TodoRepositoryImpl) GetNewWorkouts(lastWorkoutItemId int) (int, []*model.WorkoutItem) {
-	return getNewItems(lastWorkoutItemId, t.workoutsMutex, t.workouts)
-}
+func getNewItems[T model.ItemWithId](client *mongo.Client, entityName string, timestamp time.Time) ([]T, time.Time) {
+	collection := client.Database(db).Collection(entityName)
 
-func getNewItems[T model.ItemWithId](
-	lastItemId int,
-	mu *sync.RWMutex,
-	slice []T) (int, []T) {
-
-	mu.RLock()
-	defer mu.RUnlock()
-
-	doesNextItemExist, startIndex, lastId, length := getNextItemIndexById(lastItemId, slice)
-
-	if !doesNextItemExist {
-		return lastItemId, []T{}
+	filter := bson.M{
+		"_id": bson.M{
+			"$gte": primitive.NewObjectIDFromTimestamp(timestamp),
+		},
 	}
 
-	sliceCopy := make([]T, length-startIndex)
-	copy(sliceCopy, slice[startIndex:length])
+	cursor, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer cursor.Close(context.TODO())
 
-	return lastId, sliceCopy
+	var res []T
+	if err = cursor.All(context.TODO(), &res); err != nil {
+		log.Fatal(err)
+	}
+
+	return res, time.Now().UTC()
 }
 
-func getNextItemIndexById[T model.ItemWithId](itemId int, slice []T) (doesNextItemExist bool, itemIndex int, lastId int, length int) {
-
-	length = len(slice)
-
-	if length == 0 {
-		return false, 0, 0, length
+func NewTodoRepository(ctx context.Context, wg *sync.WaitGroup) *TodoRepositoryImpl {
+	res := &TodoRepositoryImpl{
+		ctx: ctx,
+		wg:  wg,
 	}
 
-	startIndex := length - 1
+	res.initDb()
+	res.listenForClosingDb()
 
-	lastId = slice[startIndex].GetId()
-
-	if lastId == itemId {
-		return false, 0, 0, length
-	}
-
-	for startIndex >= 0 {
-		id := slice[startIndex].GetId()
-		if id <= itemId {
-			break
-		}
-		itemIndex = startIndex
-
-		startIndex--
-	}
-
-	return true, itemIndex, lastId, length
+	return res
 }
 
-func NewTodoRepository() *TodoRepositoryImpl {
-	result := &TodoRepositoryImpl{
-		homeworksMutex: &sync.RWMutex{},
-		studiesMutex:   &sync.RWMutex{},
-		workoutsMutex:  &sync.RWMutex{},
-	}
+func (t *TodoRepositoryImpl) initDb() {
+	clientOptions := options.Client().ApplyURI("mongodb://mongo-container:27017")
+	ctx, cancel := context.WithTimeout(t.ctx, 10*time.Second)
+	defer cancel()
+
 	var err error
-
-	result.homeworksMutex.Lock()
-	result.homeworks, err = readFromFile[model.HomeworkItem](homeworksJson)
+	t.client, err = mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	result.homeworksMutex.Unlock()
 
-	result.studiesMutex.Lock()
-	result.studies, err = readFromFile[model.StudyItem](studiesJson)
+	err = t.client.Ping(ctx, nil)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	result.studiesMutex.Unlock()
+	log.Println("Connected to MongoDB!")
+}
 
-	result.workoutsMutex.Lock()
-	result.workouts, err = readFromFile[model.WorkoutItem](workoutsJson)
-	if err != nil {
-		panic(err)
-	}
-	result.workoutsMutex.Unlock()
+func (t *TodoRepositoryImpl) listenForClosingDb() {
+	t.wg.Add(1)
 
-	return result
+	go func() {
+		defer t.wg.Done()
+
+		for {
+			select {
+			case <-t.ctx.Done():
+				if t.client != nil {
+					ctx, cancel := context.WithTimeout(t.ctx, 10*time.Second)
+					defer cancel()
+
+					if err := t.client.Disconnect(ctx); err != nil {
+						log.Fatal(err)
+					}
+					log.Println("Disconnected from MongoDB.")
+				}
+				return
+			}
+		}
+	}()
 }

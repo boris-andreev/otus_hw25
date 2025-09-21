@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"sync"
+	"time"
 
 	"server/internal/model"
 )
@@ -10,21 +11,18 @@ import (
 type todoRepository interface {
 	CreateItem(item model.Identifier)
 	UpdateItem(item model.Identifier)
-	GetLasttHomeworkItemId() int
-	GetLastStudyItemId() int
-	GetLastWorkoutItemId() int
-	DeleteHomeworkItem(id int) error
-	DeleteStudyItem(id int) error
-	DeleteWorkoutItem(id int) error
-	GetHomeworkItem(id int) (*model.HomeworkItem, error)
-	GetStudyItem(id int) (*model.StudyItem, error)
-	GetWorkoutItem(id int) (*model.WorkoutItem, error)
+	DeleteHomeworkItem(id string) error
+	DeleteStudyItem(id string) error
+	DeleteWorkoutItem(id string) error
+	GetHomeworkItem(id string) (*model.HomeworkItem, error)
+	GetStudyItem(id string) (*model.StudyItem, error)
+	GetWorkoutItem(id string) (*model.WorkoutItem, error)
 	GetHomeworkItems() ([]*model.HomeworkItem, error)
 	GetStudyItems() ([]*model.StudyItem, error)
 	GetWorkoutItems() ([]*model.WorkoutItem, error)
-	GetNewHomewors(lastHomeworkItemId int) (int, []*model.HomeworkItem)
-	GetNewStudies(lastStudyItemId int) (int, []*model.StudyItem)
-	GetNewWorkouts(lastWorkoutItemId int) (int, []*model.WorkoutItem)
+	GetNewHomewors(timestamp time.Time) ([]*model.HomeworkItem, time.Time)
+	GetNewStudies(timestamp time.Time) ([]*model.StudyItem, time.Time)
+	GetNewWorkouts(timestamp time.Time) ([]*model.WorkoutItem, time.Time)
 }
 
 type TodoService struct {
@@ -43,27 +41,27 @@ func (t *TodoService) UpdateItem(item model.Identifier) {
 	t.items <- &operationItem{item: item, operationType: update}
 }
 
-func (t *TodoService) DeleteHomeworkItem(id int) error {
+func (t *TodoService) DeleteHomeworkItem(id string) error {
 	return t.repository.DeleteHomeworkItem(id)
 }
 
-func (t *TodoService) DeleteStudyItem(id int) error {
+func (t *TodoService) DeleteStudyItem(id string) error {
 	return t.repository.DeleteStudyItem(id)
 }
 
-func (t *TodoService) DeleteWorkoutItem(id int) error {
+func (t *TodoService) DeleteWorkoutItem(id string) error {
 	return t.repository.DeleteWorkoutItem(id)
 }
 
-func (t *TodoService) GetHomeworkItem(id int) (*model.HomeworkItem, error) {
+func (t *TodoService) GetHomeworkItem(id string) (*model.HomeworkItem, error) {
 	return t.repository.GetHomeworkItem(id)
 }
 
-func (t *TodoService) GetStudyItem(id int) (*model.StudyItem, error) {
+func (t *TodoService) GetStudyItem(id string) (*model.StudyItem, error) {
 	return t.repository.GetStudyItem(id)
 }
 
-func (t *TodoService) GetWorkoutItem(id int) (*model.WorkoutItem, error) {
+func (t *TodoService) GetWorkoutItem(id string) (*model.WorkoutItem, error) {
 	return t.repository.GetWorkoutItem(id)
 }
 

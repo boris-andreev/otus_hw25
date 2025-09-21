@@ -1,0 +1,28 @@
+services:
+  test-server:
+    image: test-server
+    container_name: test-server-container
+    build:
+      context: .
+      dockerfile: server//Dockerfile.debug
+    networks:
+      - test
+    ports:
+      - 5001:5001
+      - 4000:4000
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-container
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - test
+
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    networks:
+      - test
+networks:
+  test:

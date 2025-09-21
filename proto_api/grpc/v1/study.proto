@@ -11,16 +11,16 @@ message CreateStudyRequest {
 }
 
 message UpdateStudyRequest {
-  int64 id = 1;
+  string id = 1;
   string topic = 2;
 }
 
 message GetStudyRequest {
-  int64 id = 1;
+  string id = 1;
 }
 
 message GetStudyResponse {
-  int64 id = 1;
+  string id = 1;
   string topic = 2;
 }
 
@@ -29,7 +29,7 @@ message ListStudyResponse {
 }
 
 message DeleteStudyRequest {
-  int64 id = 1;
+  string id = 1;
 }
 
 service StudyService {

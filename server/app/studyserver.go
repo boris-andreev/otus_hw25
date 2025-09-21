@@ -6,6 +6,7 @@ import (
 	"server/internal/model"
 	"server/internal/service"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -23,8 +24,13 @@ func (h *studyServer) CreateStudy(ctx context.Context, item *todo_api.CreateStud
 }
 
 func (h *studyServer) UpdateStudy(ctx context.Context, item *todo_api.UpdateStudyRequest) (*emptypb.Empty, error) {
+	var id, err = primitive.ObjectIDFromHex(item.Id)
+	if err != nil {
+		return nil, nil
+	}
+
 	h.todoService.UpdateItem(&model.StudyItem{
-		Id:    int(item.Id),
+		Id:    id,
 		Topic: item.Topic,
 	})
 
@@ -32,14 +38,14 @@ func (h *studyServer) UpdateStudy(ctx context.Context, item *todo_api.UpdateStud
 }
 
 func (h *studyServer) GetStudy(ctx context.Context, request *todo_api.GetStudyRequest) (*todo_api.GetStudyResponse, error) {
-	item, err := h.todoService.GetStudyItem(int(request.Id))
+	item, err := h.todoService.GetStudyItem(request.Id)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &todo_api.GetStudyResponse{
-		Id:    int64(item.Id),
+		Id:    item.Id.Hex(),
 		Topic: item.Topic,
 	}, nil
 }
@@ -54,7 +60,7 @@ func (h *studyServer) ListStudy(context.Context, *emptypb.Empty) (*todo_api.List
 
 	for _, item := range items {
 		result = append(result, &todo_api.GetStudyResponse{
-			Id:    int64(item.Id),
+			Id:    item.Id.Hex(),
 			Topic: item.Topic,
 		})
 	}
@@ -65,7 +71,7 @@ func (h *studyServer) ListStudy(context.Context, *emptypb.Empty) (*todo_api.List
 }
 
 func (h *studyServer) DeleteStudy(ctx context.Context, request *todo_api.DeleteStudyRequest) (*emptypb.Empty, error) {
-	h.todoService.DeleteStudyItem(int(request.Id))
+	h.todoService.DeleteStudyItem(request.Id)
 
 	return &emptypb.Empty{}, nil
 }

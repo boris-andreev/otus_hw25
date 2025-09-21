@@ -6,6 +6,7 @@ import (
 	"server/internal/model"
 	"server/internal/service"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -23,8 +24,13 @@ func (h *homeworkServer) CreateHomework(ctx context.Context, item *todo_api.Crea
 }
 
 func (h *homeworkServer) UpdateHomework(ctx context.Context, item *todo_api.UpdateHomeworkRequest) (*emptypb.Empty, error) {
+	var id, err = primitive.ObjectIDFromHex(item.Id)
+	if err != nil {
+		return nil, nil
+	}
+
 	h.todoService.UpdateItem(&model.HomeworkItem{
-		Id:          int(item.Id),
+		Id:          id,
 		Description: item.Description,
 	})
 
@@ -32,14 +38,14 @@ func (h *homeworkServer) UpdateHomework(ctx context.Context, item *todo_api.Upda
 }
 
 func (h *homeworkServer) GetHomework(ctx context.Context, request *todo_api.GetHomeworkRequest) (*todo_api.GetHomeworkResponse, error) {
-	item, err := h.todoService.GetHomeworkItem(int(request.Id))
+	item, err := h.todoService.GetHomeworkItem(request.Id)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &todo_api.GetHomeworkResponse{
-		Id:          int64(item.Id),
+		Id:          item.Id.Hex(),
 		Description: item.Description,
 	}, nil
 }
@@ -54,7 +60,7 @@ func (h *homeworkServer) ListHomework(context.Context, *emptypb.Empty) (*todo_ap
 
 	for _, item := range items {
 		result = append(result, &todo_api.GetHomeworkResponse{
-			Id:          int64(item.Id),
+			Id:          item.Id.Hex(),
 			Description: item.Description,
 		})
 	}
@@ -65,7 +71,7 @@ func (h *homeworkServer) ListHomework(context.Context, *emptypb.Empty) (*todo_ap
 }
 
 func (h *homeworkServer) DeleteHomework(ctx context.Context, request *todo_api.DeleteHomeworkRequest) (*emptypb.Empty, error) {
-	h.todoService.DeleteHomeworkItem(int(request.Id))
+	h.todoService.DeleteHomeworkItem(request.Id)
 
 	return &emptypb.Empty{}, nil
 }
