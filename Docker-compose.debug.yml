@@ -4,7 +4,7 @@ services:
     container_name: test-server-container
     build:
       context: .
-      dockerfile: server//Dockerfile.debug
+      dockerfile: server/Dockerfile.debug
     networks:
       - test
     ports:

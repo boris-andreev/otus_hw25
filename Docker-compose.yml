@@ -4,7 +4,7 @@ services:
     container_name: test-server-container
     build:
       context: .
-      dockerfile: server//Dockerfile
+      dockerfile: server/Dockerfile
     networks:
       - test
     ports:
@@ -13,8 +13,6 @@ services:
   mongo:
     image: mongo:latest
     container_name: mongo-container
-    volumes:
-      - ./init-scripts:/docker-entrypoint-initdb.d
     networks:
       - test
 
