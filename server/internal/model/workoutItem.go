@@ -5,8 +5,8 @@ import (
 )
 
 type WorkoutItem struct {
-	Id     primitive.ObjectID `json:"id"`
-	Target string             `json:"target" binding:"required"`
+	Id     primitive.ObjectID `json:"id"  bson:"_id"`
+	Target string             `json:"target" binding:"required" bson:"target"`
 }
 
 func (w *WorkoutItem) GetId() primitive.ObjectID {

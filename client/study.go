@@ -11,10 +11,10 @@ import (
 
 func testStudykApi(conn *grpc.ClientConn) {
 	log.Println("Study items")
-	homeworkClient := todo_api.NewStudyServiceClient(conn)
+	studyClient := todo_api.NewStudyServiceClient(conn)
 
 	log.Println("Crreate item")
-	_, err := homeworkClient.CreateStudy(
+	_, err := studyClient.CreateStudy(
 		context.Background(),
 		&todo_api.CreateStudyRequest{
 			Topic: "Math",
@@ -27,7 +27,7 @@ func testStudykApi(conn *grpc.ClientConn) {
 
 	log.Println("Item created")
 
-	lr, err := homeworkClient.ListStudy(
+	lr, err := studyClient.ListStudy(
 		context.Background(),
 		&emptypb.Empty{},
 	)
@@ -39,12 +39,12 @@ func testStudykApi(conn *grpc.ClientConn) {
 	log.Println("List Items:")
 
 	for _, item := range lr.Result {
-		log.Printf("Id: %d, Topic: %s", item.Id, item.Topic)
+		log.Printf("Id: %s, Topic: %s", item.Id, item.Topic)
 	}
 
 	id := lr.Result[0].Id
 
-	ir, err := homeworkClient.GetStudy(
+	ir, err := studyClient.GetStudy(
 		context.Background(),
 		&todo_api.GetStudyRequest{
 			Id: id,
@@ -55,10 +55,10 @@ func testStudykApi(conn *grpc.ClientConn) {
 	}
 
 	log.Println("Item:")
-	log.Printf("Id: %d, Topic: %s", ir.Id, ir.Topic)
+	log.Printf("Id: %s, Topic: %s", ir.Id, ir.Topic)
 
 	log.Println("Delete Item")
-	_, err = homeworkClient.DeleteStudy(
+	_, err = studyClient.DeleteStudy(
 		context.Background(),
 		&todo_api.DeleteStudyRequest{
 			Id: id,

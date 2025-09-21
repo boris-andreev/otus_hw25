@@ -39,7 +39,7 @@ func testHomeworkApi(conn *grpc.ClientConn) {
 	log.Println("List Items:")
 
 	for _, homeworkItem := range lr.Result {
-		log.Printf("Id: %d, Description: %s", homeworkItem.Id, homeworkItem.Description)
+		log.Printf("Id: %s, Description: %s", homeworkItem.Id, homeworkItem.Description)
 	}
 
 	id := lr.Result[0].Id
@@ -55,7 +55,7 @@ func testHomeworkApi(conn *grpc.ClientConn) {
 	}
 
 	log.Println("Item:")
-	log.Printf("Id: %d, Description: %s", ir.Id, ir.Description)
+	log.Printf("Id: %s, Description: %s", ir.Id, ir.Description)
 
 	log.Println("Delete Item")
 	_, err = homeworkClient.DeleteHomework(

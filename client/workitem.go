@@ -11,10 +11,10 @@ import (
 
 func testWorkoutkApi(conn *grpc.ClientConn) {
 	log.Println("Workout items")
-	homeworkClient := todo_api.NewWorkoutServiceClient(conn)
+	workoutClient := todo_api.NewWorkoutServiceClient(conn)
 
 	log.Println("Crreate item")
-	_, err := homeworkClient.CreateWorkout(
+	_, err := workoutClient.CreateWorkout(
 		context.Background(),
 		&todo_api.CreateWorkoutRequest{
 			Target: "Target",
@@ -27,7 +27,7 @@ func testWorkoutkApi(conn *grpc.ClientConn) {
 
 	log.Println("Item created")
 
-	lr, err := homeworkClient.ListWorkout(
+	lr, err := workoutClient.ListWorkout(
 		context.Background(),
 		&emptypb.Empty{},
 	)
@@ -39,12 +39,12 @@ func testWorkoutkApi(conn *grpc.ClientConn) {
 	log.Println("List Items:")
 
 	for _, item := range lr.Result {
-		log.Printf("Id: %d, Target: %s", item.Id, item.Target)
+		log.Printf("Id: %s, Target: %s", item.Id, item.Target)
 	}
 
 	id := lr.Result[0].Id
 
-	ir, err := homeworkClient.GetWorkout(
+	ir, err := workoutClient.GetWorkout(
 		context.Background(),
 		&todo_api.GetWorkoutRequest{
 			Id: id,
@@ -55,10 +55,10 @@ func testWorkoutkApi(conn *grpc.ClientConn) {
 	}
 
 	log.Println("Item:")
-	log.Printf("Id: %d, Target: %s", ir.Id, ir.Target)
+	log.Printf("Id: %s, Target: %s", ir.Id, ir.Target)
 
 	log.Println("Delete Item")
-	_, err = homeworkClient.DeleteWorkout(
+	_, err = workoutClient.DeleteWorkout(
 		context.Background(),
 		&todo_api.DeleteWorkoutRequest{
 			Id: id,

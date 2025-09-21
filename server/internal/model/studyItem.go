@@ -5,8 +5,8 @@ import (
 )
 
 type StudyItem struct {
-	Id    primitive.ObjectID `json:"id"`
-	Topic string             `json:"topic" binding:"required"`
+	Id    primitive.ObjectID `json:"id" bson:"_id"`
+	Topic string             `json:"topic" binding:"required" bson:"topic"`
 }
 
 func (s *StudyItem) GetId() primitive.ObjectID {
