@@ -6,6 +6,7 @@ import (
 	"server/internal/service/mock"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -79,13 +80,9 @@ func TestTodoService_CreateItem(t *testing.T) {
 }
 
 func sharedMock(repositoryMock *mock.MocktodoRepository) {
-	repositoryMock.EXPECT().GetLasttHomeworkItemId().AnyTimes().Return(0)
-	repositoryMock.EXPECT().GetLastStudyItemId().AnyTimes().Return(0)
-	repositoryMock.EXPECT().GetLastWorkoutItemId().AnyTimes().Return(0)
-
-	repositoryMock.EXPECT().GetNewHomewors(gomock.Any()).AnyTimes().Return(0, nil)
-	repositoryMock.EXPECT().GetNewStudies(gomock.Any()).AnyTimes().Return(0, nil)
-	repositoryMock.EXPECT().GetNewWorkouts(gomock.Any()).AnyTimes().Return(0, nil)
+	repositoryMock.EXPECT().GetNewHomewors(gomock.Any()).AnyTimes().Return(nil, time.Now().UTC())
+	repositoryMock.EXPECT().GetNewStudies(gomock.Any()).AnyTimes().Return(nil, time.Now().UTC())
+	repositoryMock.EXPECT().GetNewWorkouts(gomock.Any()).AnyTimes().Return(nil, time.Now().UTC())
 }
 
 func TestTodoService_UpdateItem(t *testing.T) {
@@ -153,7 +150,7 @@ func TestTodoService_UpdateItem(t *testing.T) {
 
 func TestTodoService_DeleteHomeworkItem(t *testing.T) {
 	type args struct {
-		id int
+		id string
 	}
 
 	ctrl := gomock.NewController(t)
@@ -171,10 +168,10 @@ func TestTodoService_DeleteHomeworkItem(t *testing.T) {
 		{
 			name: "Delete homework",
 			args: args{
-				id: 10,
+				id: "10",
 			},
 			mock: func() {
-				repositoryMock.EXPECT().DeleteHomeworkItem(10).Return(nil)
+				repositoryMock.EXPECT().DeleteHomeworkItem("10").Return(nil)
 			},
 		},
 	}
@@ -200,7 +197,7 @@ func TestTodoService_DeleteHomeworkItem(t *testing.T) {
 
 func TestTodoService_DeleteStudyItem(t *testing.T) {
 	type args struct {
-		id int
+		id string
 	}
 
 	ctrl := gomock.NewController(t)
@@ -218,10 +215,10 @@ func TestTodoService_DeleteStudyItem(t *testing.T) {
 		{
 			name: "Delete study",
 			args: args{
-				id: 10,
+				id: "10",
 			},
 			mock: func() {
-				repositoryMock.EXPECT().DeleteStudyItem(10).Return(nil)
+				repositoryMock.EXPECT().DeleteStudyItem("10").Return(nil)
 			},
 		},
 	}
@@ -247,7 +244,7 @@ func TestTodoService_DeleteStudyItem(t *testing.T) {
 
 func TestTodoService_DeleteWorkoutItem(t *testing.T) {
 	type args struct {
-		id int
+		id string
 	}
 
 	ctrl := gomock.NewController(t)
@@ -265,10 +262,10 @@ func TestTodoService_DeleteWorkoutItem(t *testing.T) {
 		{
 			name: "Delete workout",
 			args: args{
-				id: 10,
+				id: "10",
 			},
 			mock: func() {
-				repositoryMock.EXPECT().DeleteWorkoutItem(10).Return(nil)
+				repositoryMock.EXPECT().DeleteWorkoutItem("10").Return(nil)
 			},
 		},
 	}
@@ -294,7 +291,7 @@ func TestTodoService_DeleteWorkoutItem(t *testing.T) {
 
 func TestTodoService_GetHomeworkItem(t *testing.T) {
 	type args struct {
-		id int
+		id string
 	}
 
 	ctrl := gomock.NewController(t)
@@ -312,10 +309,10 @@ func TestTodoService_GetHomeworkItem(t *testing.T) {
 		{
 			name: "Get homework",
 			args: args{
-				id: 10,
+				id: "10",
 			},
 			mock: func() {
-				repositoryMock.EXPECT().GetHomeworkItem(10).Return(homeworkItem, nil)
+				repositoryMock.EXPECT().GetHomeworkItem("10").Return(homeworkItem, nil)
 			},
 		},
 	}
@@ -342,7 +339,7 @@ func TestTodoService_GetHomeworkItem(t *testing.T) {
 
 func TestTodoService_GetStudyItem(t *testing.T) {
 	type args struct {
-		id int
+		id string
 	}
 
 	ctrl := gomock.NewController(t)
@@ -360,10 +357,10 @@ func TestTodoService_GetStudyItem(t *testing.T) {
 		{
 			name: "Get study",
 			args: args{
-				id: 10,
+				id: "10",
 			},
 			mock: func() {
-				repositoryMock.EXPECT().GetStudyItem(10).Return(studyItem, nil)
+				repositoryMock.EXPECT().GetStudyItem("10").Return(studyItem, nil)
 			},
 		},
 	}
@@ -390,7 +387,7 @@ func TestTodoService_GetStudyItem(t *testing.T) {
 
 func TestTodoService_GetWorkoutItem(t *testing.T) {
 	type args struct {
-		id int
+		id string
 	}
 
 	ctrl := gomock.NewController(t)
@@ -408,10 +405,10 @@ func TestTodoService_GetWorkoutItem(t *testing.T) {
 		{
 			name: "Get workout",
 			args: args{
-				id: 10,
+				id: "10",
 			},
 			mock: func() {
-				repositoryMock.EXPECT().GetWorkoutItem(10).Return(workoutItem, nil)
+				repositoryMock.EXPECT().GetWorkoutItem("10").Return(workoutItem, nil)
 			},
 		},
 	}

@@ -1,0 +1,25 @@
+services:
+  test-server:
+    image: test-server
+    container_name: test-server-container
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    networks:
+      - test
+    ports:
+      - 5001:5001
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-container
+    networks:
+      - test
+
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    networks:
+      - test
+networks:
+  test:

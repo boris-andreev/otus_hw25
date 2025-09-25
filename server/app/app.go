@@ -35,7 +35,7 @@ func New(ctx context.Context, wg *sync.WaitGroup, todoService *service.TodoServi
 
 func (a *App) Start() {
 	go func() {
-		l, err := net.Listen("tcp", "localhost:5001")
+		l, err := net.Listen("tcp", ":5001")
 
 		if err != nil {
 			log.Fatalf("Failed to listen: %v", err)

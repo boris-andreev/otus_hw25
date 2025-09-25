@@ -6,6 +6,7 @@ import (
 	"server/internal/model"
 	"server/internal/service"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -23,8 +24,13 @@ func (h *workoutServer) CreateWorkout(ctx context.Context, item *todo_api.Create
 }
 
 func (h *workoutServer) UpdateWorkout(ctx context.Context, item *todo_api.UpdateWorkoutRequest) (*emptypb.Empty, error) {
+	var id, err = primitive.ObjectIDFromHex(item.Id)
+	if err != nil {
+		return nil, nil
+	}
+
 	h.todoService.UpdateItem(&model.WorkoutItem{
-		Id:     int(item.Id),
+		Id:     id,
 		Target: item.Target,
 	})
 
@@ -32,14 +38,14 @@ func (h *workoutServer) UpdateWorkout(ctx context.Context, item *todo_api.Update
 }
 
 func (h *workoutServer) GetWorkout(ctx context.Context, request *todo_api.GetWorkoutRequest) (*todo_api.GetWorkoutResponse, error) {
-	item, err := h.todoService.GetWorkoutItem(int(request.Id))
+	item, err := h.todoService.GetWorkoutItem(request.Id)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &todo_api.GetWorkoutResponse{
-		Id:     int64(item.Id),
+		Id:     item.Id.Hex(),
 		Target: item.Target,
 	}, nil
 }
@@ -54,7 +60,7 @@ func (h *workoutServer) ListWorkout(context.Context, *emptypb.Empty) (*todo_api.
 
 	for _, item := range items {
 		result = append(result, &todo_api.GetWorkoutResponse{
-			Id:     int64(item.Id),
+			Id:     item.Id.Hex(),
 			Target: item.Target,
 		})
 	}
@@ -65,7 +71,7 @@ func (h *workoutServer) ListWorkout(context.Context, *emptypb.Empty) (*todo_api.
 }
 
 func (h *workoutServer) DeleteWorkout(ctx context.Context, request *todo_api.DeleteWorkoutRequest) (*emptypb.Empty, error) {
-	h.todoService.DeleteWorkoutItem(int(request.Id))
+	h.todoService.DeleteWorkoutItem(request.Id)
 
 	return &emptypb.Empty{}, nil
 }

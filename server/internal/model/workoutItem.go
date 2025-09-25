@@ -1,14 +1,18 @@
 package model
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 type WorkoutItem struct {
-	Id     int    `json:"id"`
-	Target string `json:"target" binding:"required"`
+	Id     primitive.ObjectID `json:"id"  bson:"_id"`
+	Target string             `json:"target" binding:"required" bson:"target"`
 }
 
-func (w *WorkoutItem) GetId() int {
+func (w *WorkoutItem) GetId() primitive.ObjectID {
 	return w.Id
 }
 
-func (w *WorkoutItem) SetId(id int) {
+func (w *WorkoutItem) SetId(id primitive.ObjectID) {
 	w.Id = id
 }

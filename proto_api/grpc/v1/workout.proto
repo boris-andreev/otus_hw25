@@ -11,16 +11,16 @@ message CreateWorkoutRequest {
 }
 
 message UpdateWorkoutRequest {
-  int64 id = 1;
+  string id = 1;
   string target = 2;
 }
 
 message GetWorkoutRequest {
-  int64 id = 1;
+  string id = 1;
 }
 
 message GetWorkoutResponse {
-  int64 id = 1;
+  string id = 1;
   string target = 2;
 }
 
@@ -29,7 +29,7 @@ message ListWorkoutResponse {
 }
 
 message DeleteWorkoutRequest {
-  int64 id = 1;
+  string id = 1;
 }
 
 service WorkoutService {

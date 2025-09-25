@@ -11,16 +11,16 @@ message CreateHomeworkRequest {
 }
 
 message UpdateHomeworkRequest {
-  int64 id = 1;
+  string id = 1;
   string description = 2;
 }
 
 message GetHomeworkRequest {
-  int64 id = 1;
+  string id = 1;
 }
 
 message GetHomeworkResponse {
-  int64 id = 1;
+  string id = 1;
   string description = 2;
 }
 
@@ -29,7 +29,7 @@ message ListHomeworkResponse {
 }
 
 message DeleteHomeworkRequest {
-  int64 id = 1;
+  string id = 1;
 }
 
 service HomeworkService {
