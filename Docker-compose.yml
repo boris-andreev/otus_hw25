@@ -1,7 +1,24 @@
 services:
+  db:
+    image: postgres:18-alpine
+    container_name: postgres_container
+    env_file: .env
+    volumes:
+      - ./postgres/init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "$$POSTGRES_USER", "-d", "$$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - test
+
   test-server:
     image: test-server
     container_name: test-server-container
+    env_file: .env
     build:
       context: .
       dockerfile: server/Dockerfile
@@ -9,15 +26,12 @@ services:
       - test
     ports:
       - 5001:5001
-
-  mongo:
-    image: mongo:latest
-    container_name: mongo-container
-    networks:
-      - test
+    depends_on:
+      db:
+        condition: service_healthy
 
   redis:
-    image: redis:latest
+    image: redis:8.2.2-alpine
     container_name: redis-container
     networks:
       - test

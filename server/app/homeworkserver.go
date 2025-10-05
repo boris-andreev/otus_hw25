@@ -6,7 +6,6 @@ import (
 	"server/internal/model"
 	"server/internal/service"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -24,13 +23,8 @@ func (h *homeworkServer) CreateHomework(ctx context.Context, item *todo_api.Crea
 }
 
 func (h *homeworkServer) UpdateHomework(ctx context.Context, item *todo_api.UpdateHomeworkRequest) (*emptypb.Empty, error) {
-	var id, err = primitive.ObjectIDFromHex(item.Id)
-	if err != nil {
-		return nil, nil
-	}
-
 	h.todoService.UpdateItem(&model.HomeworkItem{
-		Id:          id,
+		Id:          item.Id,
 		Description: item.Description,
 	})
 
@@ -45,7 +39,7 @@ func (h *homeworkServer) GetHomework(ctx context.Context, request *todo_api.GetH
 	}
 
 	return &todo_api.GetHomeworkResponse{
-		Id:          item.Id.Hex(),
+		Id:          item.Id,
 		Description: item.Description,
 	}, nil
 }
@@ -60,7 +54,7 @@ func (h *homeworkServer) ListHomework(context.Context, *emptypb.Empty) (*todo_ap
 
 	for _, item := range items {
 		result = append(result, &todo_api.GetHomeworkResponse{
-			Id:          item.Id.Hex(),
+			Id:          item.Id,
 			Description: item.Description,
 		})
 	}

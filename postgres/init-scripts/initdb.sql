@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS homeworks (
+    id UUID PRIMARY KEY DEFAULT uuidv7()
+);
+
+CREATE TABLE IF NOT EXISTS studies (
+    id UUID PRIMARY KEY DEFAULT uuidv7()
+);
+
+CREATE TABLE IF NOT EXISTS workouts (
+    id UUID PRIMARY KEY DEFAULT uuidv7()
+);

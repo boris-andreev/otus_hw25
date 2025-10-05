@@ -66,9 +66,9 @@ func logAddedItems[T model.ItemWithId](
 			}
 
 			err = rdb.Set(
-				ctx, 
-				fmt.Sprintf(keyFormat, item.GetId().Hex()), 
-				jsonData, 
+				ctx,
+				fmt.Sprintf(keyFormat, item.GetId()),
+				jsonData,
 				time.Minute).Err()
 			if err != nil {
 				log.Panic(err)

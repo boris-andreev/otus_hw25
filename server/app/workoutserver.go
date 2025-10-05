@@ -6,7 +6,6 @@ import (
 	"server/internal/model"
 	"server/internal/service"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -24,13 +23,8 @@ func (h *workoutServer) CreateWorkout(ctx context.Context, item *todo_api.Create
 }
 
 func (h *workoutServer) UpdateWorkout(ctx context.Context, item *todo_api.UpdateWorkoutRequest) (*emptypb.Empty, error) {
-	var id, err = primitive.ObjectIDFromHex(item.Id)
-	if err != nil {
-		return nil, nil
-	}
-
 	h.todoService.UpdateItem(&model.WorkoutItem{
-		Id:     id,
+		Id:     item.Id,
 		Target: item.Target,
 	})
 
@@ -45,7 +39,7 @@ func (h *workoutServer) GetWorkout(ctx context.Context, request *todo_api.GetWor
 	}
 
 	return &todo_api.GetWorkoutResponse{
-		Id:     item.Id.Hex(),
+		Id:     item.Id,
 		Target: item.Target,
 	}, nil
 }
@@ -60,7 +54,7 @@ func (h *workoutServer) ListWorkout(context.Context, *emptypb.Empty) (*todo_api.
 
 	for _, item := range items {
 		result = append(result, &todo_api.GetWorkoutResponse{
-			Id:     item.Id.Hex(),
+			Id:     item.Id,
 			Target: item.Target,
 		})
 	}
