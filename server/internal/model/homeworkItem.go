@@ -1,18 +1,14 @@
 package model
 
-import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
-
 type HomeworkItem struct {
-	Id          primitive.ObjectID `json:"id" bson:"_id"`
-	Description string             `json:"description" binding:"required" bson:"description"`
+	Id          string `json:"id" bson:"-"`
+	Description string `json:"description" binding:"required" bson:"description"`
 }
 
-func (h *HomeworkItem) GetId() primitive.ObjectID {
+func (h *HomeworkItem) GetId() string {
 	return h.Id
 }
 
-func (h *HomeworkItem) SetId(id primitive.ObjectID) {
+func (h *HomeworkItem) SetId(id string) {
 	h.Id = id
 }

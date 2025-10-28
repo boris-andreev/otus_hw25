@@ -6,7 +6,6 @@ import (
 	"server/internal/model"
 	"server/internal/service"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -24,13 +23,8 @@ func (h *studyServer) CreateStudy(ctx context.Context, item *todo_api.CreateStud
 }
 
 func (h *studyServer) UpdateStudy(ctx context.Context, item *todo_api.UpdateStudyRequest) (*emptypb.Empty, error) {
-	var id, err = primitive.ObjectIDFromHex(item.Id)
-	if err != nil {
-		return nil, nil
-	}
-
 	h.todoService.UpdateItem(&model.StudyItem{
-		Id:    id,
+		Id:    item.Id,
 		Topic: item.Topic,
 	})
 
@@ -45,7 +39,7 @@ func (h *studyServer) GetStudy(ctx context.Context, request *todo_api.GetStudyRe
 	}
 
 	return &todo_api.GetStudyResponse{
-		Id:    item.Id.Hex(),
+		Id:    item.Id,
 		Topic: item.Topic,
 	}, nil
 }
@@ -60,7 +54,7 @@ func (h *studyServer) ListStudy(context.Context, *emptypb.Empty) (*todo_api.List
 
 	for _, item := range items {
 		result = append(result, &todo_api.GetStudyResponse{
-			Id:    item.Id.Hex(),
+			Id:    item.Id,
 			Topic: item.Topic,
 		})
 	}

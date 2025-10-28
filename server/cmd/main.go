@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"server/app"
-	"server/internal/repository"
+	"server/internal/postgresRepository"
 	"server/internal/service"
 )
 
@@ -18,7 +18,7 @@ func main() {
 	defer stop()
 
 	var wg sync.WaitGroup
-	todoService := service.NewTodoService(repository.NewTodoRepository(ctx, &wg), ctx, &wg)
+	todoService := service.NewTodoService(postgresrepository.NewTodoRepository(ctx, &wg), ctx, &wg)
 
 	app := app.New(ctx, &wg, todoService)
 
